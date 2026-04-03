@@ -179,6 +179,7 @@ Use this hash (not the tag name) in Linear links — it is immutable and survive
    git push origin {branch}
    ```
    This creates a stable rollback point. A human reviewing the PR can check out this commit to inspect each task in isolation.
+   Mark the Linear issue **Agent Coded**.
 5. Open a PR referencing the Linear issue (e.g. `fixes TF-42`). Mark the issue **In Review**.
 
 ---
