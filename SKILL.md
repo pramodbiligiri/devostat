@@ -16,6 +16,7 @@ Apply this skill whenever you are:
 3. **Every `[agent]` project must reference at least one permanent backlog feature issue.** If none exists, stop and create one before proceeding.
 4. **Linear is never the source of truth for plan content.** Git is. Linear tracks task state only.
 5. **Tags are permanent.** Never delete a plan version tag from remote, even on abandonment or squash merge.
+6. **Tests precede implementation.** Write integration test(s) before any task code (Phase 2 preamble), then the unit test for each task before its implementation. Never implement without a failing test already committed. (Apply as far as possible — migrations and config may not be TDD-able.)
 
 ---
 
@@ -149,9 +150,33 @@ Use this hash (not the tag name) in Linear links — it is immutable and survive
 
 ## Phase 2 — Execute
 
-Work against Linear issues sequentially.
+**Before writing any code**, confirm the test coverage threshold with the human (default: 95%). Record the agreed value before proceeding.
 
-- Every PR and commit references the Linear issue being addressed (e.g. `fixes TF-42`)
+### Preamble: integration tests (once, before any task)
+
+1. Write 1–2 integration tests that exercise the feature end-to-end. No more than two.
+2. Commit and push them with no implementation — they must fail (red). Reference the Linear project in the commit message.
+3. Confirm red state:
+   ```bash
+   # run your project's test command, e.g.:
+   npm test          # or: pytest, go test ./..., etc.
+   ```
+   If a test passes at this point, it is testing the wrong thing. Fix or discard it before continuing.
+
+### Per-task loop (repeat for every Linear issue in sequence)
+
+1. Write the unit test(s) for this task. Commit them failing (red).
+2. Implement the task. Run tests until green.
+3. Check coverage meets the agreed threshold:
+   ```bash
+   # example — adjust to your toolchain:
+   npm test -- --coverage --coverageThreshold='{"global":{"lines":95}}'
+   ```
+   Do not close the Linear issue until coverage passes.
+4. Open a PR referencing the Linear issue (e.g. `fixes TF-42`). Mark the issue **In Review**.
+
+---
+
 - **Minor deviation** (task split, reorder, clarification): Update the Linear issue(s) only, add a deviation comment explaining why, continue.
 - **Major deviation** (fundamental plan problem, architecture issue, blocked): Stop immediately. Post a Linear project update. Set project health to **"At Risk"**. Wait for the human to revise the plan file, commit, push, and give a new go-ahead.
 
