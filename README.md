@@ -1,3 +1,21 @@
+# code-flow
+
+## Installation
+
+**Via Claude Code (recommended):**
+```
+/plugin install code-flow@github:pramodbiligiri/code-flow
+```
+
+**Manually:**
+```bash
+mkdir -p ~/.claude/skills/code-flow
+curl -o ~/.claude/skills/code-flow/SKILL.md \
+  https://raw.githubusercontent.com/pramodbiligiri/code-flow/main/skills/code-flow/SKILL.md
+```
+
+---
+
 A Claude skill for a development workflow that's built on the following assumptions:
 - You build software in vertical slices as much as possible.
 - You create a plan (roughly corresponds to a feature or some logical unit of work) for the code changes and then start implementing it. But you're open to modifying the plan midway based on how it's going.
