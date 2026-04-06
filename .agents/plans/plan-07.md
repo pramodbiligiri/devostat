@@ -19,7 +19,7 @@ A plugin is the standard distribution unit for Claude Code. It requires:
   move (copy the file).
 - `.agents/plans/` and `.claude/settings.local.json` are untouched — they are execution history and
   local dev config, not plugin content.
-- No LICENSE file added in this plan (can be a follow-on).
+- Apache 2.0 LICENSE file added at repo root (required for plugin distribution).
 - README gets an Installation section explaining how others can install the plugin.
 
 ## Tasks
@@ -37,7 +37,10 @@ Add an **Installation** section to `README.md` explaining:
 
 ### Task 4 — Sync personal skill install
 Copy `skills/code-flow/SKILL.md` to `~/.claude/skills/code-flow/SKILL.md` to keep personal install
-current.
+current. (Cancelled — not needed before merge review.)
+
+### Task 5 — Add Apache 2.0 LICENSE file
+Add a `LICENSE` file at the repo root with the standard Apache 2.0 license text.
 
 ## Open Questions
 
