@@ -4,7 +4,8 @@
 
 **Via Claude Code (recommended):**
 ```
-/plugin install code-flow@github:pramodbiligiri/code-flow
+/plugin marketplace add https://github.com/pramodbiligiri/claude-plugins
+/plugin install code-flow@pramodb-plugins 
 ```
 
 **Manually:**
