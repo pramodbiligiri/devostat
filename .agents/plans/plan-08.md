@@ -15,14 +15,20 @@ The GitHub Release associated with `v0.9` will be deleted manually by the user.
 
 ## Tasks
 
-### Task 1 — Delete v0.9 tag and create v0.1.0
+### Task 1 — Delete v0.9 tag (on feature branch)
 
 1. Delete local tag: `git tag -d v0.9`
 2. Delete remote tag: `git push origin :refs/tags/v0.9`
-3. Create new tag on current main HEAD: `git tag v0.1.0`
-4. Push new tag: `git push origin v0.1.0`
 
 No code changes. No tests required.
+
+### Task 2 — Create v0.1.0 tag (after merging to main)
+
+After the PR for this branch is merged to main:
+
+1. Switch to main and pull: `git checkout main && git pull`
+2. Create new tag on main HEAD: `git tag v0.1.0`
+3. Push new tag: `git push origin v0.1.0`
 
 ## Verification
 
