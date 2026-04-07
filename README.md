@@ -2,6 +2,8 @@
 
 ## Installation
 
+**From within Claude Code:**
+
 First, register the marketplace (one-time setup):
 ```
 /plugin marketplace add https://github.com/pramodbiligiri/claude-plugins
