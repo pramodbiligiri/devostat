@@ -191,7 +191,36 @@ All task commits go on this branch. The `t/` prefix stands for "task" (covers fe
    ```
    If a test passes at this point, it is testing the wrong thing. Fix or discard it before continuing.
 
-### Per-task loop (repeat for every Linear issue in sequence)
+### Per-task loop (The De-risk & Harden Cycle)
+
+For every Linear issue in the risk-sorted sequence, apply the appropriate sub-phases:
+
+#### High and Medium risk tasks — De-risk & Harden Cycle
+
+##### Step A: De-risking (Spiral Phase)
+- **Goal:** Validate logic and architectural direction. Ignore "Implementation Quality" rules.
+- Write at least one failing test that targets the core logic (preserving Core Invariant #6).
+- Implement just enough to prove the approach works. Focus on the core complexity.
+- Commit as `draft(N): de-risk [task name]` and notify the human in Linear.
+- **Wait for explicit approval of the approach.**
+
+##### Step B: Hardening (Quality Phase)
+- **Goal:** Achieve technical excellence, human readability, and coverage threshold.
+- Refactor the de-risked code for readability, performance, and project patterns.
+- Write full unit tests and ensure coverage meets the agreed threshold:
+  ```bash
+  # example — adjust to your toolchain:
+  npm test -- --coverage --coverageThreshold='{"global":{"lines":95}}'
+  ```
+- Commit the completed task (tests + implementation):
+  ```bash
+  git commit -m "task(N): <short description>"
+  git push origin t/{issue-id}-{short-description}
+  ```
+  This creates a stable rollback point. A human reviewing the PR can check out this commit to inspect each task in isolation.
+- Mark the Linear issue **Agent Coded**.
+
+#### Low risk tasks — Single-pass (current behavior)
 
 1. Write the unit test(s) for this task. Commit them failing (red).
 2. Implement the task. Run tests until green.
@@ -206,9 +235,7 @@ All task commits go on this branch. The `t/` prefix stands for "task" (covers fe
    git commit -m "task(N): <short description>"
    git push origin t/{issue-id}-{short-description}
    ```
-   This creates a stable rollback point. A human reviewing the PR can check out this commit to inspect each task in isolation.
-   Mark the Linear issue **Agent Coded**.
-5. Open a PR referencing the Linear issue (e.g. `fixes TF-42`). Mark the issue **In Review**.
+   Mark the Linear issue **Agent Coded**. No draft review needed.
 
 ---
 
