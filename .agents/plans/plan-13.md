@@ -177,14 +177,20 @@ All scripts read/write `.agents/plans/plan-{N}-tasks.xml` relative to the repo r
 ### Task 9: Implement `show.ts` — pretty-print task state [Low]
 - Read XML and output a human-readable summary (task table + recent updates)
 
-### Task 10: Update README.md [Low]
+### Task 10: Fix tsconfig.json leaking into build output [Low]
+- Maven's `copy-node-config` execution copies `tsconfig.json` into `build/` unintentionally
+  (Maven scans the project root directory even with explicit `<includes>`)
+- Fix: move `package.json` to `src/main/node/` so Maven copies cleanly from a dedicated dir
+- Verify `tsconfig.json` no longer appears in `build/` after `mvn clean process-resources`
+
+### Task 11: Update README.md [Low]
 - Note local task tracking as an alternative to Linear in Features section
 
 ## Files to create/modify
 - **Create:** `scripts/tasks/hello.ts` (test file, later replaced by real scripts)
 - **Create:** `scripts/tasks/types.ts`, `init.ts`, `update-status.ts`, `add-comment.ts`, `add-deviation.ts`, `set-commit.ts`, `project-update.ts`, `show.ts`
 - **Create:** `hooks/hooks.json`
-- **Modify:** `package.json` — add dependencies
+- **Create:** `src/main/node/package.json` — node dependencies (moved here to avoid Maven leaking tsconfig.json into build)
 - **Create:** `tsconfig.json`
 - **Modify:** `skills/code-flow/SKILL.md` — add local mode
 - **Modify:** `README.md` — mention local mode
