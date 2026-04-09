@@ -122,7 +122,7 @@
             </configuration>
           </execution>
 
-          <!-- Copy package.json and tsconfig.json into build/ -->
+          <!-- Copy package.json into build/ -->
           <execution>
             <id>copy-node-config</id>
             <phase>process-resources</phase>
@@ -137,7 +137,6 @@
                   <filtering>false</filtering>
                   <includes>
                     <include>package.json</include>
-                    <include>tsconfig.json</include>
                   </includes>
                 </resource>
               </resources>
