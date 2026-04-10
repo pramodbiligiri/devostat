@@ -20,7 +20,7 @@
         <artifactId>exec-maven-plugin</artifactId>
         <version>3.1.0</version>
         <executions>
-          <!-- npm install (only if node_modules is missing or package.json changed) -->
+          <!-- npm install (skip if package-lock.json matches installed state) -->
           <execution>
             <id>npm-install</id>
             <phase>process-resources</phase>
@@ -32,7 +32,7 @@
               <workingDirectory>${project.basedir}</workingDirectory>
               <arguments>
                 <argument>-c</argument>
-                <argument>[ -d node_modules ] &amp;&amp; diff -q package.json node_modules/.package-lock.json &gt;/dev/null 2&gt;&amp;1 || npm install --silent</argument>
+                <argument>[ -d node_modules ] &amp;&amp; [ node_modules -nt package.json ] || npm install --silent</argument>
               </arguments>
             </configuration>
           </execution>

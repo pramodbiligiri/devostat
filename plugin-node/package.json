@@ -9,5 +9,9 @@
   },
   "devDependencies": {
     "@types/node": "^25.6.0"
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "node --test dist/init.test.js"
   }
 }
