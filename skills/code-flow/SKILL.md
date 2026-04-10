@@ -204,7 +204,7 @@ All task commits go on this branch. The `t/` prefix stands for "task" (covers fe
 ### Preamble: integration tests (once, before any task)
 
 1. Write 1–2 integration tests that exercise the feature end-to-end. No more than two.
-2. Commit and push them with no implementation — they must fail (red). Reference the Linear project in the commit message.
+2. Commit and push them with no implementation — they must fail (red). `[Linear]` Reference the Linear project in the commit message.
 3. Confirm red state:
    ```bash
    # run your project's test command, e.g.:
@@ -214,7 +214,7 @@ All task commits go on this branch. The `t/` prefix stands for "task" (covers fe
 
 ### Per-task loop (The De-risk & Harden Cycle)
 
-For every Linear issue in the risk-sorted sequence, apply the appropriate sub-phases:
+For every task in the risk-sorted sequence, apply the appropriate sub-phases:
 
 #### High and Medium risk tasks — De-risk & Harden Cycle
 
@@ -224,7 +224,7 @@ For every Linear issue in the risk-sorted sequence, apply the appropriate sub-ph
 - Implement just enough to prove the approach works. Focus on the core complexity.
 - Commit as `draft(N): de-risk [task name]`.
 - `[Linear]` Post a comment on the Linear issue notifying the human the draft is ready.
-- `[Local]` Run `node ${CLAUDE_PLUGIN_DATA}/dist/add-comment.js --plan {N} --task {id} --message "De-risk draft ready for review"` and update status to `de-risked`.
+- `[Local]` Run `node ${CLAUDE_PLUGIN_DATA}/dist/update-status.js --plan {N} --task {id} --status de-risked` and `node ${CLAUDE_PLUGIN_DATA}/dist/add-comment.js --plan {N} --task {id} --message "De-risk draft ready for review"`.
 - **Wait for explicit approval of the approach.**
 
 ##### Step B: Hardening (Quality Phase)
