@@ -45,19 +45,24 @@ Update console message in hello.ts.
 **Files:**
 - `plugin-node/src/main/scripts/tasks/hello.ts`
 
-### Task 4 — README overhaul (Risk: Low)
+### Task 4 — Manual verification checkpoint
+Human verifies the rename works end-to-end (build, dev plugin load, skill invocation) before proceeding to docs.
+
+**Wait for explicit go-ahead.**
+
+### Task 5 — README overhaul (Risk: Low)
 Rename title, add tagline, update install/usage commands and links.
 
 **Files:**
 - `README.md`
 
-### Task 5 — DEVELOPMENT.md update (Risk: Low)
+### Task 6 — DEVELOPMENT.md update (Risk: Low)
 Replace all code-flow references with devostat.
 
 **Files:**
 - `DEVELOPMENT.md`
 
-### Task 6 — Demo cast update (Risk: Low)
+### Task 7 — Demo cast update (Risk: Low)
 Update code-flow references in the asciinema recording file.
 
 **Files:**

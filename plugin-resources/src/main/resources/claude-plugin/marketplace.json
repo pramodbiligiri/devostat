@@ -1,9 +1,9 @@
 {
-  "name": "code-flow-dev",
-  "description": "Development marketplace for code-flow plugin",
+  "name": "devostat-dev",
+  "description": "Development marketplace for devostat plugin",
   "owner": {
     "name": "Pramod Biligiri",
-    "url": "https://github.com/pramodbiligiri/code-flow"
+    "url": "https://github.com/pramodbiligiri/devostat"
   },
   "plugins": [
     {
@@ -12,7 +12,7 @@
       "source": "./",
       "author": {
         "name": "Pramod Biligiri",
-        "url": "https://github.com/pramodbiligiri/code-flow"
+        "url": "https://github.com/pramodbiligiri/devostat"
       },
       "category": "development"
     }

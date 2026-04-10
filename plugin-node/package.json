@@ -1,7 +1,7 @@
 {
-  "name": "code-flow",
+  "name": "devostat",
   "version": "0.1.0",
-  "description": "code-flow plugin scripts",
+  "description": "devostat plugin scripts",
   "private": true,
   "dependencies": {
     "fast-xml-parser": "^5.0.0",

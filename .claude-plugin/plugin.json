@@ -1,10 +1,10 @@
 {
-  "name": "code-flow",
+  "name": "devostat",
   "description": "A workflow for agentic coding where 1) you track implementation plans and tasks in version control, issue tracker 2) identify and implement the risky/unknown bits first 3) implement vertical slices of functionality 4) only increase quality and test coverage after sufficient de-risking",
   "author": {
     "name": "Pramod Biligiri"
   },
-  "homepage": "https://github.com/pramodbiligiri/code-flow",
-  "repository": "https://github.com/pramodbiligiri/code-flow",
+  "homepage": "https://github.com/pramodbiligiri/devostat",
+  "repository": "https://github.com/pramodbiligiri/devostat",
   "license": "Apache-2.0"
 }
