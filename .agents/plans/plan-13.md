@@ -9,9 +9,64 @@ The code-flow plugin currently depends on Linear for all task state tracking. Th
 
 - **Format: XML** — machine-writable, extensible, not whitespace-sensitive (unlike YAML). Human readability deferred to a future viewer tool.
 - **File location: `.agents/plans/plan-{N}-tasks.xml`** — sibling to the plan file. Keeps the flat directory structure, no migration needed for existing plans, compatible with existing git tag conventions.
-- **Scripts: TypeScript, pre-compiled to JS** — TS source in `scripts/tasks/` in the plugin repo. SessionStart hook runs `tsc` once into `${CLAUDE_PLUGIN_DATA}/dist/`. Runtime invocation is plain `node`. TS source also copied to `${CLAUDE_PLUGIN_DATA}/src/` for browsing.
-- **Dependencies: `typescript` + `fast-xml-parser`** (~26MB) — installed in `${CLAUDE_PLUGIN_DATA}` via SessionStart hook using the documented diff-and-install pattern from the [plugins reference](https://code.claude.com/docs/en/plugins-reference#persistent-data-directory).
+- **Scripts: TypeScript, pre-compiled to JS** — TS source in `plugin-node/src/main/scripts/tasks/`. SessionStart hook runs `tsc` once into `${CLAUDE_PLUGIN_DATA}/dist/`. Runtime invocation is plain `node`. TS source also copied to `${CLAUDE_PLUGIN_DATA}/src/` for browsing.
+- **Dependencies: `typescript` + `fast-xml-parser`** (~26MB) — installed in `${CLAUDE_PLUGIN_DATA}` via SessionStart hook using the documented diff-and-install pattern.
 - **Mode detection:** SKILL.md uses `[Linear]` / `[Local]` inline markers at divergence points. Unmarked instructions apply to both modes.
+- **Multi-module Maven structure** — repo restructured into three Maven modules: `plugin-node` (TS source + build), `plugin-resources` (SKILL.md, plugin metadata, hooks), `plugin-dist` (assembly). Cleanly separates concerns, eliminates tsconfig.json leak, and gives Node/TS a proper Maven module home.
+
+## Multi-module structure
+
+```
+code-flow/                              ← parent POM (packaging=pom)
+├── pom.xml
+│
+├── plugin-node/                        ← Node/TS module
+│   ├── pom.xml                         ← runs npm install + tsc via exec-maven-plugin
+│   ├── package.json
+│   ├── tsconfig.json
+│   └── src/
+│       ├── main/
+│       │   └── scripts/tasks/
+│       │       ├── hello.ts
+│       │       ├── init.ts
+│       │       └── (future scripts)
+│       └── test/
+│           ├── fixtures/
+│           │   └── (test XML fixtures)
+│           └── scripts/tasks/
+│               └── init.test.ts
+│
+├── plugin-resources/                   ← Markdown, JSON metadata, hooks
+│   ├── pom.xml                         ← maven-resources-plugin, filtering
+│   └── src/main/resources/
+│       ├── claude-plugin/
+│       │   ├── plugin.json
+│       │   └── marketplace.json
+│       ├── hooks/
+│       │   └── hooks.json
+│       └── skills/code-flow/
+│           └── SKILL.md
+│
+└── plugin-dist/                        ← Assembly: merges outputs into build/
+    └── pom.xml                         ← depends on plugin-node + plugin-resources
+```
+
+### Build flow
+
+- `mvn process-resources` from root: runs all three modules in order
+- `plugin-node`: `npm install` (skipped if `node_modules/` is fresh) + `tsc` → `plugin-node/dist/`
+- `plugin-resources`: filters and copies SKILL.md, plugin.json, marketplace.json, hooks.json → `plugin-resources/target/`
+- `plugin-dist`: assembles final plugin layout into `build/` (dev profile) or `build-prod/` (prod profile)
+
+### SessionStart hook (updated paths)
+
+The hook references `${CLAUDE_PLUGIN_ROOT}/plugin-node/` as source:
+
+```
+diff package.json → copy → npm install → cp src/ → tsc → dist/
+Source: ${CLAUDE_PLUGIN_ROOT}/plugin-node/package.json
+TS src: ${CLAUDE_PLUGIN_ROOT}/plugin-node/src/main/scripts/tasks/
+```
 
 ## XML schema
 
@@ -67,7 +122,7 @@ Valid task statuses: `pending`, `in-progress`, `de-risked`, `agent-coded`, `clos
 
 ## TypeScript scripts
 
-Located at `scripts/tasks/` in the plugin repo. Each script handles one or more XML operations:
+Located at `plugin-node/src/main/scripts/tasks/`. Each script handles one or more XML operations:
 
 | Script | Operations covered | Example invocation |
 |---|---|---|
@@ -81,124 +136,95 @@ Located at `scripts/tasks/` in the plugin repo. Each script handles one or more 
 
 All scripts read/write `.agents/plans/plan-{N}-tasks.xml` relative to the repo root.
 
-## Plugin infrastructure
-
-### package.json (in plugin repo root)
-```json
-{
-  "dependencies": {
-    "typescript": "^5.x",
-    "fast-xml-parser": "^5.x"
-  }
-}
-```
-
-### tsconfig.json (in plugin repo root)
-```json
-{
-  "compilerOptions": {
-    "target": "ES2020",
-    "module": "commonjs",
-    "outDir": "${CLAUDE_PLUGIN_DATA}/dist",
-    "rootDir": "./scripts/tasks",
-    "strict": true
-  },
-  "include": ["scripts/tasks/**/*.ts"]
-}
-```
-
-### SessionStart hook (in hooks/hooks.json)
-```json
-{
-  "hooks": {
-    "SessionStart": [{
-      "hooks": [{
-        "type": "command",
-        "command": "diff -q \"${CLAUDE_PLUGIN_ROOT}/package.json\" \"${CLAUDE_PLUGIN_DATA}/package.json\" >/dev/null 2>&1 || (cd \"${CLAUDE_PLUGIN_DATA}\" && cp \"${CLAUDE_PLUGIN_ROOT}/package.json\" . && npm install && cp \"${CLAUDE_PLUGIN_ROOT}/tsconfig.json\" . && npx tsc -p . && cp -r \"${CLAUDE_PLUGIN_ROOT}/scripts/tasks\" \"${CLAUDE_PLUGIN_DATA}/src\") || rm -f \"${CLAUDE_PLUGIN_DATA}/package.json\""
-      }]
-    }]
-  }
-}
-```
-
-### SKILL.md changes
-- Add "Task Tracking Mode" section after Core Invariants
-- Add `[Linear]`/`[Local]` markers at ~10 divergence points (enumerated in Linear operation mapping above)
-- Update Core Invariant 3 for local mode: reference feature motivation in Context section
-- Update Core Invariant 4: "Linear or the local tasks file tracks task state only"
-- Update "What Lives Where" table with local mode row
-- Update Repository Structure to show tasks.xml files
-
 ## Tasks (risk-sorted: High → Medium → Low)
 
-### Task 1: SessionStart hook — install deps and compile [High]
-- Add `package.json` with `typescript` + `fast-xml-parser` dependencies
-- Add `tsconfig.json`
-- Create a minimal `scripts/tasks/hello.ts` test file (imports fast-xml-parser, logs success)
-- Create `hooks/hooks.json` with SessionStart hook using the diff-and-install pattern
-- Rebuild dev plugin (`mvn process-resources`)
+### Task 1: SessionStart hook — install deps and compile [High] ✓ DONE
+- Completed. Hook in `hooks/hooks.json`, `package.json` + `tsconfig.json` at root, `scripts/tasks/hello.ts`.
 
-### Task 2: Manually verify deps installation [High]
-- **Human task.** Start a new Claude session with the dev plugin enabled.
-- Confirm `${CLAUDE_PLUGIN_DATA}` contains: `node_modules/`, compiled `dist/hello.js`, and `src/` with TS source copy.
-- Run `node ${CLAUDE_PLUGIN_DATA}/dist/hello.js` to confirm it executes.
-- If this fails, diagnose and fix before proceeding. The approach may need rethinking.
-- **Nothing proceeds until this passes.**
+### Task 2: Manually verify deps installation [High] ✓ DONE
+- Human-verified in a prior session.
 
-### Task 3: Update SKILL.md with `[Linear]`/`[Local]` mode markers [High]
-- Add "Task Tracking Mode" section
-- Add markers at all 10+ divergence points
-- Update Core Invariants 3 and 4
-- Update "What Lives Where" table
-- Update Repository Structure
+### Task 3: Update SKILL.md with `[Linear]`/`[Local]` mode markers [High] ✓ DONE
+- Completed at commit 9ebd423.
 
-### Task 4: Implement `init.ts` — create tasks XML from plan file [Medium]
-- Parse plan markdown to extract task names (`### Task N:` pattern)
-- Generate XML with proper schema, all tasks set to `pending`
-- Accept risk levels as CLI args or default to unset
+### Task 4: Restructure repo into multi-module Maven layout [High]
+- Create `plugin-node/`, `plugin-resources/`, `plugin-dist/` directories
+- Write parent `pom.xml` with `<modules>` listing all three; move profiles and shared properties from old root POM
+- Write `plugin-node/pom.xml`: uses `exec-maven-plugin` to run `npm install` (skipped if `node_modules/` is fresh) and `tsc`
+- Write `plugin-resources/pom.xml`: uses `maven-resources-plugin` to filter and copy SKILL.md, plugin.json, marketplace.json, hooks.json
+- Write `plugin-dist/pom.xml`: assembles final `build/` directory from sibling module outputs
+- Move existing source files to new locations:
+  - `scripts/tasks/*.ts` → `plugin-node/src/main/scripts/tasks/`
+  - `scripts/tasks/*.test.ts` → `plugin-node/src/test/scripts/tasks/`
+  - `package.json`, `tsconfig.json` → `plugin-node/`
+  - `hooks/hooks.json` → `plugin-resources/src/main/resources/hooks/`
+  - `skills/code-flow/SKILL.md` → `plugin-resources/src/main/resources/skills/code-flow/`
+  - `src/main/resources/claude-plugin/` → `plugin-resources/src/main/resources/claude-plugin/`
+- Update `hooks.json` SessionStart command to reference new paths (`${CLAUDE_PLUGIN_ROOT}/plugin-node/...`)
+- Update `tsconfig.json` rootDir/include to match new layout
+- Delete old top-level dirs: `scripts/`, `hooks/`, `skills/`, `src/`
+- Verify: `mvn process-resources` produces correct `build/` output; `tsconfig.json` no longer appears in `build/`
 
-### Task 5: Create TypeScript project infrastructure [Low]
-- `scripts/tasks/` directory structure
-- Shared types/interfaces for the XML schema (task statuses, risk levels, etc.)
+### Task 5: Implement `init.ts` — create tasks XML from plan file [Medium]
+- Draft already exists at commit 7f4ead4 (`scripts/tasks/init.ts` + `init.test.ts`).
+- As part of Task 4, these move to `plugin-node/src/main/scripts/tasks/init.ts` and `plugin-node/src/test/scripts/tasks/init.test.ts`.
+- Test fixtures (generated XML) go to `plugin-node/src/test/fixtures/`.
+- Harden after Task 4 is complete and paths are stable.
 
-### Task 6: Implement `update-status.ts` — change task status [Low]
+### Task 6: Create shared TypeScript types [Low]
+- `plugin-node/src/main/scripts/tasks/types.ts`
+- Shared interfaces for Task, TaskStatus, RiskLevel, PlanTasks XML schema
+
+### Task 7: Implement `update-status.ts` — change task status [Low]
 - Parse XML, find task by id, update status attribute
 - Validate status transitions
 - Update `<closed-at-version>` when status becomes `closed`
 
-### Task 7: Implement `add-comment.ts` and `add-deviation.ts` [Low]
+### Task 8: Implement `add-comment.ts` and `add-deviation.ts` [Low]
 - Append child elements to a task's comments/deviations sections
 - Auto-generate ISO timestamps
 
-### Task 8: Implement `set-commit.ts` and `project-update.ts` [Low]
+### Task 9: Implement `set-commit.ts` and `project-update.ts` [Low]
 - `set-commit`: update commit element on a task
 - `project-update`: append to project-updates, handle `blocked` flag, update metadata status
 
-### Task 9: Implement `show.ts` — pretty-print task state [Low]
+### Task 10: Implement `show.ts` — pretty-print task state [Low]
 - Read XML and output a human-readable summary (task table + recent updates)
-
-### Task 10: Fix tsconfig.json leaking into build output [Low]
-- Maven's `copy-node-config` execution copies `tsconfig.json` into `build/` unintentionally
-  (Maven scans the project root directory even with explicit `<includes>`)
-- Fix: move `package.json` to `src/main/node/` so Maven copies cleanly from a dedicated dir
-- Verify `tsconfig.json` no longer appears in `build/` after `mvn clean process-resources`
 
 ### Task 11: Update README.md [Low]
 - Note local task tracking as an alternative to Linear in Features section
+- Note multi-module Maven structure in Development section
 
 ## Files to create/modify
-- **Create:** `scripts/tasks/hello.ts` (test file, later replaced by real scripts)
-- **Create:** `scripts/tasks/types.ts`, `init.ts`, `update-status.ts`, `add-comment.ts`, `add-deviation.ts`, `set-commit.ts`, `project-update.ts`, `show.ts`
-- **Create:** `hooks/hooks.json`
-- **Create:** `src/main/node/package.json` — node dependencies (moved here to avoid Maven leaking tsconfig.json into build)
-- **Create:** `tsconfig.json`
-- **Modify:** `skills/code-flow/SKILL.md` — add local mode
-- **Modify:** `README.md` — mention local mode
+
+### New files (multi-module restructure — Task 4)
+- `pom.xml` — updated parent with `<modules>` block
+- `plugin-node/pom.xml`
+- `plugin-node/package.json` (moved from root)
+- `plugin-node/tsconfig.json` (moved from root, rootDir/include updated)
+- `plugin-node/src/main/scripts/tasks/hello.ts` (moved)
+- `plugin-node/src/main/scripts/tasks/init.ts` (moved from `scripts/tasks/`)
+- `plugin-node/src/test/scripts/tasks/init.test.ts` (moved from `scripts/tasks/`)
+- `plugin-node/src/test/fixtures/` (test XML fixtures)
+- `plugin-node/src/main/scripts/tasks/types.ts`, `update-status.ts`, `add-comment.ts`, `add-deviation.ts`, `set-commit.ts`, `project-update.ts`, `show.ts`
+- `plugin-resources/pom.xml`
+- `plugin-resources/src/main/resources/claude-plugin/plugin.json` (moved)
+- `plugin-resources/src/main/resources/claude-plugin/marketplace.json` (moved)
+- `plugin-resources/src/main/resources/hooks/hooks.json` (moved, paths updated)
+- `plugin-resources/src/main/resources/skills/code-flow/SKILL.md` (moved)
+- `plugin-dist/pom.xml`
+
+### Files to delete (after move — Task 4)
+- `scripts/` (entire directory)
+- `hooks/` (entire directory)
+- `skills/` (entire directory)
+- `src/` (entire directory)
+- Root `package.json`, `tsconfig.json`
 
 ## Verification
-1. Rebuild dev plugin (`mvn process-resources`) after Task 1
-2. Start new Claude session — confirm SessionStart hook installs deps and compiles TS (Task 2)
-3. Run `node dist/init.js --plan 99 --tasks-from .agents/plans/plan-12.md` — confirm valid XML generated
-4. Run each script against test XML — confirm operations produce valid XML
-5. Run `mvn process-resources` — confirm SKILL.md with new sections copies to dev build
-6. Read modified SKILL.md end-to-end for logical consistency between Linear and Local modes
+1. `mvn process-resources -Pdev` → `build/` contains correct layout, no `tsconfig.json` at root of build
+2. `mvn process-resources -Pprod` → `build/` uses production plugin name/description
+3. `mvn process-resources -pl plugin-node` → compiles only the TS module independently
+4. Start new Claude session — SessionStart hook installs deps from new paths, compiles TS
+5. `node ${CLAUDE_PLUGIN_DATA}/dist/init.js --plan 99 --tasks-from .agents/plans/plan-12.md` — confirms valid XML
+6. Run all `*.test.ts` via `node --test` from `plugin-node/` — all pass
