@@ -31,7 +31,7 @@ Then install the plugin:
 Load the skill as `/devostat:devostat`. Start discussing the feature with Claude. The workflow will take you along these steps.
 
 1. **Plan** - After discussion, a plan file is created and committed  (.agents/plans/plan-{N}.md). It will have a list of tasks in it.
-2. **Calibrate** - You can override the default risk level (High/Medium/Low) for each tasks. The riskiest work will be executed first.
+2. **Calibrate** - You can override the default risk level (High/Medium/Low) for each task. The riskiest work will be executed first.
 3. **Execute** - Work through tasks in order. High-risk tasks go through a de-risk/harden cycle (prove the approach first, then polish). Low-risk tasks are single-pass.
 4. **Close out** - Tag the plan complete, archive the task state, and squash merge to main.
 
