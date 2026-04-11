@@ -1,6 +1,6 @@
 # Plan 16 — GitHub Release Build Process for devostat (PB-255)
 
-**Status:** IN PROGRESS
+**Status:** IN PROGRESS (adding Task 5)
 **Linear issue:** PB-255 (child of PB-123)
 **Branch:** t/pb-255-github-release-build
 **Linear project:** [[agent] 16 · github-release-build](https://linear.app/pb-default/project/agent-16-github-release-build-cb1f6ccae416)
@@ -122,6 +122,17 @@ Replace the current SHA-pinned source with the `git-subdir` source (see design s
 > **🤖 AGENT** — Agent writes this code.
 
 Shell script at `scripts/release.sh` to automate future releases. Takes a version arg, runs maven build, stamps version, switches to orphan `releases` branch, replaces `dist/`, commits, tags, pushes, creates GitHub Release, returns to original branch.
+
+### Task 5 [PB-260]: Update DEVELOPMENT.md with release process documentation — LOW risk
+> **🤖 AGENT** — Agent writes this.
+
+DEVELOPMENT.md currently only documents the dev build. Now that `scripts/release.sh` exists and the orphan `releases` branch workflow is in place, add a "Releasing a new version" section covering:
+
+- Prerequisites (jq, gh, clean working tree)
+- `./scripts/release.sh <version>` invocation with example
+- Numbered summary of what the script does
+- `dist/` folder structure on the `releases` branch
+- Note that `releases` is an orphan branch with no shared history with `main`
 
 ---
 
