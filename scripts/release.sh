@@ -35,6 +35,9 @@ fi
 ORIGINAL_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 MAIN_SHA=$(git rev-parse --short HEAD)
 
+echo "==> Cleaning build/ directory..."
+rm -rf build/
+
 echo "==> Building production plugin (mvn process-resources -Pprod)..."
 mvn process-resources -Pprod -q
 
