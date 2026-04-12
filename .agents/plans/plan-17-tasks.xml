@@ -39,6 +39,38 @@
     <comments></comments>
     <deviations></deviations>
   </task>
+  <task id="5" risk="low" status="pending">
+    <name>Add pauses at key moments in demo.cast</name>
+    <commit></commit>
+    <created-from>plan-17-v4</created-from>
+    <closed-at-version></closed-at-version>
+    <comments></comments>
+    <deviations></deviations>
+  </task>
+  <task id="6" risk="medium" status="pending">
+    <name>Show plan paused → modified → v2 created</name>
+    <commit></commit>
+    <created-from>plan-17-v4</created-from>
+    <closed-at-version></closed-at-version>
+    <comments></comments>
+    <deviations></deviations>
+  </task>
+  <task id="7" risk="low" status="pending">
+    <name>Non-continuous session with transition</name>
+    <commit></commit>
+    <created-from>plan-17-v4</created-from>
+    <closed-at-version></closed-at-version>
+    <comments></comments>
+    <deviations></deviations>
+  </task>
+  <task id="8" risk="low" status="pending">
+    <name>Link plan + tasks file from README</name>
+    <commit></commit>
+    <created-from>plan-17-v4</created-from>
+    <closed-at-version></closed-at-version>
+    <comments></comments>
+    <deviations></deviations>
+  </task>
   </tasks>
 
   <project-updates>
