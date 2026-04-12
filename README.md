@@ -1,6 +1,4 @@
-# devostat
-
-*Agentic energy, channelled with skill.*
+## devostat - Agentic energy, channelled with skill.
 
 A Claude Code plugin that enables a plan-driven, risk-prioritised, checkpoint based, agentic coding workflow.
 
