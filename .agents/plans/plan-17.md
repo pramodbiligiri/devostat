@@ -77,14 +77,56 @@ A Claude Code plugin that enables a plan-driven, risk-prioritised, checkpoint ba
 
 Commit, push, merge to main.
 
+### Task 5: Add pauses at key moments in demo.cast [Low]
+
+Extend timestamp gaps at read-friendly moments so viewers can take each step in before the GIF moves on:
+
+- After `✓ devostat skill loaded`
+- After the plan box is fully displayed
+- After the risk calibration list is shown
+- After `Task 1 → agent-coded`
+
+Implementation is a cast-file edit only — bump timestamps of subsequent events by ~1-2s at each pause point. No content changes. Re-render the GIF and verify file size stays under 2MB.
+
+### Task 6: Show plan paused → modified → v2 created [Medium]
+
+Extend the demo cast narrative to demonstrate the "pause and resume" and "plan as contract" workflow features:
+
+- User pauses mid-execution (e.g. after Task 1 draft)
+- Plan file is opened and edited (e.g. a new task inserted, or a risk level revised)
+- New plan version is committed and tagged `plan-07-v2`
+- Execution resumes against the updated plan
+
+Highest-content task in this batch. Narrative must ring true and stay within time budget. May require re-recording rather than hand-editing the JSON cast.
+
+### Task 7: Non-continuous session with transition [Low]
+
+Instead of showing every task play out in real time, add a visual transition after Task 1/2 completes (e.g. a dim separator line: `─── Later that session ───`) and skip forward to a summary state showing the remaining tasks as already-done. Keeps the GIF shorter while conveying completion of the full workflow.
+
+Coordinates with Task 6's narrative additions — order of execution matters.
+
+### Task 8: Link plan + tasks file from README [Low]
+
+Add a link in the README pointing to the plan and task files that the demo GIF is based on, so viewers can inspect a concrete example.
+
+Decision deferred to execution time:
+- **Option A:** Create illustrative `docs/demo/plan-demo.md` + `plan-demo-tasks.xml` matching the GIF content
+- **Option B:** Link to an actual plan in `.agents/plans/` (e.g. this plan-17 itself, or a more representative one)
+
+The GIF currently shows a fictional `plan-07.md` about Next.js frontend integration. Option A produces the closest match; Option B is the most authentic example of a real devostat plan.
+
 ---
 
 ## Risk-sorted order
 
-1. **Task 1** — Edit demo.cast (Medium)
-2. **Task 2** — Re-render GIF (Low)
-3. **Task 3** — Commit & merge to main (Low)
-4. **Task 4** — Reorder README (Low)
+1. **Task 1** — Edit demo.cast (Medium) ✓
+2. **Task 2** — Re-render GIF (Low) ✓
+3. **Task 3** — Commit & merge to main (Low) ✓
+4. **Task 4** — Reorder README (Low) ✓
+5. **Task 6** — Plan pause/modify/v2 (Medium)
+6. **Task 5** — Add pauses at key moments (Low)
+7. **Task 7** — Non-continuous session transition (Low)
+8. **Task 8** — Link plan + tasks file from README (Low)
 
 ---
 
