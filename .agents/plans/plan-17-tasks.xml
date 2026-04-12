@@ -23,9 +23,9 @@
     <comments></comments>
     <deviations></deviations>
   </task>
-  <task id="3" risk="low" status="in-progress">
+  <task id="3" risk="low" status="agent-coded">
     <name>Commit and land on main</name>
-    <commit></commit>
+    <commit>70bea2126fa5e983bffb53a8848590296f43b930</commit>
     <created-from>plan-17-v1</created-from>
     <closed-at-version></closed-at-version>
     <comments></comments>
