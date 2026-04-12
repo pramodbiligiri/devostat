@@ -23,7 +23,7 @@ This plan applies a small set of minor edits to the existing cast, re-renders th
 
 ## Tasks
 
-### Task 1 — Edit demo.cast (Medium risk)
+### Task 1: Edit demo.cast [Medium]
 
 Apply three content fixes directly to the JSON-per-line `docs/demo.cast` file:
 
@@ -33,7 +33,7 @@ Apply three content fixes directly to the JSON-per-line `docs/demo.cast` file:
 
 Medium risk because hand-editing a `.cast` file (preserving event structure, timestamps, ANSI escape sequences) has a moderate chance of breaking playback. Must verify by rendering.
 
-### Task 2 — Re-render demo-small.gif (Low risk)
+### Task 2: Re-render demo-small.gif [Low]
 
 Run the proven render pipeline:
 
@@ -50,7 +50,7 @@ Verify:
 
 If size exceeds 2MB with the extended end point, fall back: re-trim the cast to ~30s, re-render.
 
-### Task 3 — Commit and land on main (Low risk)
+### Task 3: Commit and land on main [Low]
 
 Commit only the three relevant files to `t/pb-261-readme-demo-gif`:
 - `README.md` (GIF embed already staged)
