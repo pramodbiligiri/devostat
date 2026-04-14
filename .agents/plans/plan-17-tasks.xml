@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<plan-tasks plan="17" plan-version="plan-17-v5">
+<plan-tasks plan="17" plan-version="plan-17-v6">
   <metadata>
     <backlog-issue>PB-261</backlog-issue>
     <status>active</status>
@@ -39,12 +39,14 @@
     <comments></comments>
     <deviations></deviations>
   </task>
-  <task id="5" risk="low" status="pending">
+  <task id="5" risk="low" status="closed">
     <name>Add pauses at key moments in demo.cast</name>
     <commit></commit>
     <created-from>plan-17-v4</created-from>
-    <closed-at-version></closed-at-version>
-    <comments></comments>
+    <closed-at-version>plan-17-v5</closed-at-version>
+    <comments>
+        <comment timestamp="2026-04-14T09:35:52.918Z">Subsumed into Task 6 at plan-17-v6 — read-pauses are built into the 3-beat screenplay's beat-boundary timing.</comment>
+      </comments>
     <deviations></deviations>
   </task>
   <task id="6" risk="medium" status="in-progress">
@@ -113,15 +115,39 @@ Pick one of:
 (a) small v1→v2 nudge — tighter, fits in a short GIF cleanly
 (b) big v2→v3 pivot — more dramatic, requires overnight-gap transition visual
 (c) both, using the 3-beat shape above — richest narrative, longest cast</comment>
+      
+        <comment timestamp="2026-04-14T09:30:26.065Z">SCREENPLAY DRAFTED (2026-04-14) — see /home/pramod/.claude/plans/zany-meandering-cook.md for full timing table.
+
+Direction: discard the todo-app Next.js cast entirely. Rebuild demo.cast around the real plan-13 v1→v2→v3 pivot arc preserved in docs/session/. Target 30-40s, &lt;2MB GIF.
+
+3-beat structure:
+- Beat 1 (4s→16s): in-session v1→v2 nudge. User runs `mvn clean process-resources`, spots tsconfig.json in target/classes/, pauses, asks for plan version update to add a task moving package.json to src/main/node/. Plan edited, committed, lefthook auto-tags plan-13-v2. Execution resumes.
+- Transition slide A: &quot;End of session · 2026-04-09 18:50 IST&quot; → &quot;Next morning · 2026-04-10 10:28 IST&quot;
+- Beat 2 (17.5s→32s): next-morning v2→v3 pivot. User resumes, proposes multi-module Maven restructure, pastes 3-line excerpt from Google Gemini (prefix: dim &quot;(pasted from Google Gemini)&quot;), asks for v3. Plan edited, committed, lefthook tags plan-13-v3. Old tasks 10-12 closed at v2, new tasks 10-13 created from v3.
+- Beat 3 (32s→35s): git log --oneline --tags=plan-13-* — shows three immutable tags as the payoff closing frame.
+
+Four decisions locked (2026-04-14):
+1. Real IST timestamps on screen (2026-04-09 18:39, 2026-04-10 10:28, 2026-04-10 11:38) — they cross-ref the preserved transcripts.
+2. Pasted block labelled &quot;(pasted from Google Gemini)&quot;, 3-line excerpt only, ~1s screen time.
+3. Stay true to actual devostat UX — no aspirational affordances. Every on-screen line must be something the current skill produces or a human would plausibly type. Dropped the &quot;Major deviation — escalating to plan revision&quot; yellow line.
+4. Keep the $EDITOR .agents/plans/plan-13.md → dim summary → save idiom at both plan-edit beats.
+
+Subsumes Tasks 5 (pauses at key moments — built into every beat boundary) and 7 (non-continuous session transition — the two transition slides). After executing, Tasks 5/6/7 all move to agent-coded together.
+
+Next session: open the plan file above and author docs/demo.cast from the timing table. Re-render via the existing agg command.</comment>
+      
+        <comment timestamp="2026-04-14T09:35:59.317Z">Rewritten at plan-17-v6 — retargeted from 'extend existing cast' to 'rewrite cast around real plan-13 v1→v2→v3 pivot arc.' See plan-17.md Task 6 section for the full screenplay spec, timing table, and locked decisions. Tasks 5 and 7 subsumed into this task.</comment>
       </comments>
     <deviations></deviations>
   </task>
-  <task id="7" risk="low" status="pending">
+  <task id="7" risk="low" status="closed">
     <name>Non-continuous session with transition</name>
     <commit></commit>
     <created-from>plan-17-v4</created-from>
-    <closed-at-version></closed-at-version>
-    <comments></comments>
+    <closed-at-version>plan-17-v5</closed-at-version>
+    <comments>
+        <comment timestamp="2026-04-14T09:35:55.209Z">Subsumed into Task 6 at plan-17-v6 — the two transition slides (End of session / Next morning) are structural to the 3-beat screenplay.</comment>
+      </comments>
     <deviations></deviations>
   </task>
   <task id="8" risk="low" status="pending">
