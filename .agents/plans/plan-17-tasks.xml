@@ -192,6 +192,14 @@ Next session: open the plan file above and author docs/demo.cast from the timing
     <comments></comments>
     <deviations></deviations>
   </task>
+  <task id="13" risk="low" status="pending">
+    <name>Switch demo.cast to asciinema v3 with relative timestamps</name>
+    <commit></commit>
+    <created-from>plan-17-v7</created-from>
+    <closed-at-version></closed-at-version>
+    <comments></comments>
+    <deviations></deviations>
+  </task>
   </tasks>
 
   <project-updates>
