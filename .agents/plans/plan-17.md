@@ -21,6 +21,8 @@ This plan applies a small set of minor edits to the existing cast, re-renders th
 
 **v6 revision note:** Tasks 5 and 7 subsumed into Task 6 after a screenplay design pass on 2026-04-14. Task 6 retargeted from "extend existing cast" to "rewrite cast around the real plan-13 v1→v2→v3 pivot arc" preserved in `docs/session/`. See the Task 6 section for the full screenplay and locked decisions. Task numbering is not renumbered — the gaps left by deleted Tasks 5 and 7 are the audit trail.
 
+**v7 revision note (2026-04-15):** Added Task 12 — preserve the pre-pivot `demo.cast` (Next.js todo-app version, from commit `70bea21`) under `docs/demo-1/demo.cast`. Source-only; the old GIF is re-renderable from the cast. The README continues to use the new plan-13 pivot cast/GIF. Pure addition, no retarget or subsume.
+
 ---
 
 ## Tasks
@@ -258,6 +260,19 @@ Short index (~15-20 lines) explaining:
 - That these are raw Claude Code session logs — not intended to be diffed, just preserved
 - Any redactions applied (carried forward from Task 9 findings)
 
+### Task 12: Preserve pre-pivot demo.cast under docs/demo-1/ [Low]
+
+The README now points to the new plan-13 pivot cast (Task 6). The pre-pivot cast (fictional Next.js todo-app session) from commit `70bea21` is the only surviving demo-authoring work for the "basic plan → execute" narrative, and is worth keeping as reference material for future demo work.
+
+Preserve the source only. The ~1.6MB rendered GIF is not preserved — it can be re-rendered from the cast via the Task 2 `agg` pipeline if ever needed.
+
+Steps:
+1. `mkdir -p docs/demo-1 && git show 70bea21:docs/demo.cast > docs/demo-1/demo.cast`
+2. Verify the recovered file is a valid asciinema v2 cast (first line is the JSON header `{"version": 2, …}`; subsequent lines are JSON event arrays).
+3. Commit as `chore(17): preserve pre-pivot demo.cast under docs/demo-1/`. Push — lefthook will not tag because no `.agents/plans/` file changed.
+
+Folder chosen as `docs/demo-1/` (not `docs/session/…`) to keep demo artefacts grouped under `docs/` while leaving `docs/session/` reserved for raw Claude Code session transcripts.
+
 ---
 
 ## Risk-sorted order
@@ -271,8 +286,9 @@ Short index (~15-20 lines) explaining:
 7. **Task 11** — Write docs/session/README.md (Low)
 8. **Task 6** — Rewrite demo.cast around plan-13 pivot narrative (Medium)
 9. **Task 8** — Link plan + tasks file from README (Low)
+10. **Task 12** — Preserve pre-pivot demo.cast under docs/demo-1/ (Low)
 
-Tasks 5 and 7 were subsumed into Task 6 at plan-17-v6 — see Task 6 section. Tasks 10 and 11 are hard prerequisites for Task 6 (which references the preserved transcripts). Task 9 was High-risk and came first regardless (scan complete, 0 secrets).
+Tasks 5 and 7 were subsumed into Task 6 at plan-17-v6 — see Task 6 section. Tasks 10 and 11 are hard prerequisites for Task 6 (which references the preserved transcripts). Task 9 was High-risk and came first regardless (scan complete, 0 secrets). Task 12 has no dependencies on other tasks and may be executed independently.
 
 ---
 

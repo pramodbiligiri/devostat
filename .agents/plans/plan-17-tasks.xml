@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<plan-tasks plan="17" plan-version="plan-17-v6">
+<plan-tasks plan="17" plan-version="plan-17-v7">
   <metadata>
     <backlog-issue>PB-261</backlog-issue>
     <status>active</status>
@@ -180,6 +180,14 @@ Next session: open the plan file above and author docs/demo.cast from the timing
     <name>Write docs/session/README.md</name>
     <commit></commit>
     <created-from>plan-17-v5</created-from>
+    <closed-at-version></closed-at-version>
+    <comments></comments>
+    <deviations></deviations>
+  </task>
+  <task id="12" risk="low" status="pending">
+    <name>Preserve pre-pivot demo.cast under docs/demo-1/</name>
+    <commit></commit>
+    <created-from>plan-17-v7</created-from>
     <closed-at-version></closed-at-version>
     <comments></comments>
     <deviations></deviations>
